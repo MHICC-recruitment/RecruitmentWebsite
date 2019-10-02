@@ -8,8 +8,8 @@
 7. To deploy website enter: ```firebase deploy --only functions```
 
 # Git
--Pour coder suggestions: Web Storm, VSCode
--Pour git: GitKraken 
--git pull (tirer le code)
--git commit -m "message des changements"
--git push
+Pour coder suggestions: Web Storm, VSCode  
+Pour git: GitKraken  
+git pull (tirer le code)  
+git commit -m "message des changements"  
+git push  
