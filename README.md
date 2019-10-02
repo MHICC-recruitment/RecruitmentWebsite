@@ -7,8 +7,9 @@
 6. Init the cloud functions: ```firebase init functions```
 7. To deploy website enter: ```firebase deploy --only functions```
 
-Pour coder suggestions: Web Storm, VSCode
-Pour git: GitKraken 
-git pull (tirer le code)
-git commit -m "message des changements"
-git push
+# Git
+-Pour coder suggestions: Web Storm, VSCode
+-Pour git: GitKraken 
+-git pull (tirer le code)
+-git commit -m "message des changements"
+-git push
