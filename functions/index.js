@@ -1,19 +1,35 @@
-const functions = require('firebase-functions');
-const express = require('express');
 
-const admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
+// const admin = require('firebase-admin')
+// const functions = require('firebase-functions');
+//
+// admin.initializeApp();
+// let db = admin.firestore();
+
+// // // Create and Deploy Your First Cloud Functions
+// // // https://firebase.google.com/docs/functions/write-firebase-functions
+//
+// exports.addUser = functions.https.onRequest(async (req, res) => {
+//   await db.collection('users').doc(req.query.email).set({gender:'F'});
+//   res.sendStatus(200);
+// });
 
 
-exports.helloWorld = functions.https.onRequest((req, res) =>{
-    res.send("Hello from Firebase Cloud Functions");
+
+/* Example of promises:
+admin.firestore().doc('').get();
+.then(snapshot => {
+    const data = snapshot.data();
+    response.send(data)
 });
-
-// Write into db
-exports.insertIntoDB = functions.https.onRequest((req, res) =>{
-    const text = req.query.text;
-    return admin.database().ref('/test').push({text: text}).then(snapshot => {
-        res.redirect(303, snapshot.ref);
-        return null
-    })
+.catch(error => {
+    // Handle error
+    console.log(error);
+    response.status(500).send(error);
 });
+ */
+// .then(snapshot => {
+//  return console.log(snapshot)
+// })
+//     .catch(error => {
+//      return console.log(error);
+//     });
