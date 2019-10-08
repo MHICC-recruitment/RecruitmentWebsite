@@ -7,19 +7,24 @@ let db = admin.firestore();
 /* FUNCTIONS RELATED TO USERS*/
 
 exports.addUser = functions.https.onRequest(async (req, res) => {
-    const snapshot = await db.collection('users').doc(req.query.email).set({'gender': req.query.gender,
-    'birthDate': req.query.birthDate,
-    'smoker': req.query.smoker,
-    'studyNotification': req.query.studyNotification});
-    console.log(snapshot);
-    let dataAdded = await db.collection('users').doc(req.query.email).get();
-    if (dataAdded.exists)
+    // Verify if email already exists
+    userToBeAdded = await db.collection('users').doc(req.query.email).get();
+    if (!userToBeAdded.exists)
     {
-        res.send("User added");
+        // Add user
+        const snapshot = await db.collection('users').doc(req.query.email).set({'gender': req.query.gender,
+            'birthDate': req.query.birthDate,
+            'smoker': req.query.smoker,
+            'studyNotification': req.query.studyNotification}).catch((reason => {
+            console.error(reason);
+            res.send(reason);
+        }));
+        console.log(snapshot);
+        res.send("The user has been added.")
     }
     else
     {
-        res.send("User was not added")
+        res.send("The user already exists.")
     }
 
 });
@@ -29,9 +34,12 @@ exports.removeUser = functions.https.onRequest(async (req, res) => {
 
     if (docToDelete.exists)
     {
-        const snapshot = await db.collection('users').doc(req.query.email).delete();
+        const snapshot = await db.collection('users').doc(req.query.email).delete().catch((reason => {
+            console.error(reason);
+            res.send(reason);
+        }));
         console.log(snapshot);
-        res.sendStatus(200);
+        res.send("The user has been removed.")
     }
     else
     {
