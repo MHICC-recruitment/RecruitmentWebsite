@@ -27,7 +27,7 @@ let db = admin.firestore();
 * */
 exports.addUser = functions.https.onRequest(async (req, res) => {
     // Verify if email already exists
-    userToBeAdded = await db.collection('users').doc(req.body.email).get();
+    let userToBeAdded = await db.collection('users').doc(req.body.email).get();
     if (!userToBeAdded.exists)
     {
         // Add user
@@ -63,7 +63,7 @@ exports.addUser = functions.https.onRequest(async (req, res) => {
 * */
 exports.addInfoOnUser = functions.https.onRequest(async(req, res) => {
     // Verify user exists
-    user = await db.collection('users').doc(req.body.email).get();
+    let user = await db.collection('users').doc(req.body.email).get();
     if (user.exists)
     {
         const snapshot = await db.collection('users').doc(req.body.email).update(req.body.userInfo).catch(
@@ -108,6 +108,37 @@ exports.removeUser = functions.https.onRequest(async (req, res) => {
     }
 });
 
+/*
+*   This functions verifies and extracts the users eligible according to given criterias.
+*   POST:
+*   criterias: Json containing the criterias
+*   studyName: Json containing the French and English name of the study
+*
+*   Return: List of all users eligible with their related data.
+*
+*   Example
+*   {
+	    "criterias": {"gender":"F", "smoker":true},
+	    "studyName": {"en": "English study name",  "fr": "French study name"}
+     }
+* */
+
+exports.findsAllUsersEligible = functions.https.onRequest( async (req, res) => {
+    let criterias = req.body.criterias;
+    let listOfKeys = Object.keys(criterias);
+    let tmp_list = db.collection('users');
+    for(let item of listOfKeys){
+        tmp_list = tmp_list.where(item, "==", criterias[item]);
+    }
+
+    const eligibleUsers = await tmp_list.get();
+    let listOfEligibleUsers = eligibleUsers.docs.map(value => ({[`${value.id}`]: value.data()}));
+
+    res.send(listOfEligibleUsers)
+
+});
+
+
 
 /* FUNCTIONS RELATED TO CLINICAL STUDIES INFORMATION*/
 /*
@@ -118,16 +149,16 @@ exports.removeUser = functions.https.onRequest(async (req, res) => {
 *   Example
 *   {
 *       "info": {
-*                   "name": "Name",
+*                   "studyName": "Name",
 *                   "information": Information about the study
 *               }
 *   }
 * */
 exports.addClinicalStudy = functions.https.onRequest(async (req, res) => {
     // Verify if clinical study already exists
-    clinicalStudyIDs = db.collection("clinicalStudies");
-    lastStudy = await clinicalStudyIDs.orderBy("id", "desc").limit(1).get();
-    newDataId = lastStudy.docs[0].data().id + 1;
+    let clinicalStudyIDs = db.collection("clinicalStudies");
+    let lastStudy = await clinicalStudyIDs.orderBy("id", "desc").limit(1).get();
+    let newDataId = lastStudy.docs[0].data().id + 1;
 
     Number.prototype.pad = function(size) {
         var s = String(this);
@@ -147,7 +178,6 @@ exports.addClinicalStudy = functions.https.onRequest(async (req, res) => {
 
 });
 
-
 /* FUNCTIONS RELATED TO EMAIL SENDING */
 const gmailEmail = functions.config().gmail.email;
 const gmailPassword = functions.config().gmail.password;
@@ -163,85 +193,98 @@ let transporter = nodemailer.createTransport({
 /*
 *  This function sends an email to a user to inform they are eligible to a new clinical study.
 *   POST:
-*   dest: email destination
-*   lang: "en" or "fr" to represent the language
+*   dest: list of users. FindAllUsersEligible returns this type of list
 *   studyName: json containing the french and english name of the study
 *
 *   Example
 *   {
-        "lang":"en",
-        "dest":"example.email@polymtl.ca",
+        "dest":[
+                    {
+                        "andreanne.lemay97@gmail.com": {
+                            "smoker": true,
+                            "studyNotification": false,
+                            "lang": "en",
+                            "gender": "F"
+                        }
+                    },
+                    {
+                        "andreanne.lemay97@hotmail.com": {
+                            "smoker": true,
+                            "studyNotification": true,
+                            "lang": "fr",
+                            "gender": "F"
+                        }
+                    }
+                ]
         "studyName":{"fr": "Nom de l'étude clinique",
                      "en": "Clinical Study Name"}
     }
 * */
-exports.sendEmail = functions.https.onRequest((req, res) => {
-    cors(req, res, () => {
+exports.sendEmail = functions.https.onRequest(async (req, res) => {
 
-        // getting dest email by query string
-        const dest = req.body.dest;
-        const englishEmail = `
-        <p style="font-size: 16px; font-family: Arial"> We are pleased to inform you that you are eligible for our new 
-        clinical trial ${req.body.studyName.en}. For more information or to register please go to the following link:
-        <a href="https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}">
-        https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}?lang=en
-        </a>
-        </p>
-        <br />
-        <img src="http://www.mhicc.org/images/mhicc_en.gif" />
-        <p style="font-size: 16px; font-family: Arial">
-        Montreal Health Innovations Coordinating Center <br />
-        4100 Molson St., Suite 400 <br />
-        Montreal, Quebec H1Y 3N1 <br />
-        Tel: 514-461-1300 </p>`;
+    // Go through every email in the list and send email according to prefered language
+    await Promise.all(req.body.dest.map( user => {
+        const dest = Object.keys(user)[0];
+        const language = user[dest].lang;
+        cors(req, res, () => {
+            // getting dest email by query string
+            const englishEmail = `
+            <p style="font-size: 16px; font-family: Arial"> We are pleased to inform you that you are eligible for our new 
+            clinical trial ${req.body.studyName.en}. For more information or to register please go to the following link:
+            <a href="https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}">
+            https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}?lang=en
+            </a>
+            </p>
+            <br />
+            <img src="http://www.mhicc.org/images/mhicc_en.gif" />
+            <p style="font-size: 16px; font-family: Arial">
+            Montreal Health Innovations Coordinating Center <br />
+            4100 Molson St., Suite 400 <br />
+            Montreal, Quebec H1Y 3N1 <br />
+            Tel: 514-461-1300 </p>`;
 
-        const frenchEmail = `
-        <p style="font-size: 16px; font-family: Arial"> Nous avons le plaisir de vous annoncer que vous êtes éligible à
-        cette nouvelle étude clinique: ${req.body.studyName.fr}. Pour plus d'informations à propos de l'étude 
-        clinique ou pour vous y inscrire allez au lien suivant:
-        <a href="https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}">
-        https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}?lang=fr
-        </a>
-        </p>
-        <br />
-        <img src="http://www.mhicc.org/images/mhicc_fr.gif" />
-        <p style="font-size: 16px; font-family: Arial">
-        Centre de Coordination des Essais Cliniques de Montréal <br />
-        4100 Molson St., Suite 400 <br />
-        Montréal, Québec H1Y 3N1 <br />
-        Tél: 514–461–1300 </p>`;
+            const frenchEmail = `
+            <p style="font-size: 16px; font-family: Arial"> Nous avons le plaisir de vous annoncer que vous êtes éligible à
+            cette nouvelle étude clinique: ${req.body.studyName.fr}. Pour plus d'informations à propos de l'étude 
+            clinique ou pour vous y inscrire allez au lien suivant:
+            <a href="https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}">
+            https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}?lang=fr
+            </a>
+            </p>
+            <br />
+            <img src="http://www.mhicc.org/images/mhicc_fr.gif" />
+            <p style="font-size: 16px; font-family: Arial">
+            Centre de Coordination des Essais Cliniques de Montréal <br />
+            4100 Molson St., Suite 400 <br />
+            Montréal, Québec H1Y 3N1 <br />
+            Tél: 514–461–1300 </p>`;
 
-        let mailOptions;
-        if (req.body.lang === "en")
-        {
-            mailOptions = {
-                from: 'MHICC Recruiting Team <${gmailEmail}>',
-                to: dest,
-                subject: 'Clinical Trial Eligibility', // email subject
-                html:  englishEmail// email content in HTML
-            };
-        }
-        else if (req.body.lang === "fr")
-        {
-            mailOptions = {
-                from: 'Équipe de recrutement de MHICC <${gmailEmail}>',
-                to: dest,
-                subject: 'Éligibilité à une étude clinique', // email subject
-                html:  frenchEmail// email content in HTML
-            };
-        }
-        console.log("Email sent.")
-
-        // returning result
-        return transporter.sendMail(mailOptions, (erro, info) => {
-            if(erro){
-                return res.send(erro.toString());
+            let mailOptions;
+            if (language === "en") {
+                mailOptions = {
+                    from: 'MHICC Recruiting Team <${gmailEmail}>',
+                    to: dest,
+                    subject: 'Clinical Trial Eligibility', // email subject
+                    html: englishEmail// email content in HTML
+                };
+            } else if (language === "fr") {
+                mailOptions = {
+                    from: 'Équipe de recrutement de MHICC <${gmailEmail}>',
+                    to: dest,
+                    subject: 'Éligibilité à une étude clinique', // email subject
+                    html: frenchEmail// email content in HTML
+                };
             }
-            return res.send('Sended');
+            return transporter.sendMail(mailOptions);
         });
+    }))
+    .catch(reason => {
+        console.error(reason);
+        res.send(reason);
     });
-});
 
+    return res.send('Sended');
+});
 
 
 /* FUNCTIONS RELATED TO ADMIN ACCESSES INFORMATION*/
