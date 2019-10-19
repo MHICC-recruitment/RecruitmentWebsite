@@ -225,7 +225,7 @@ let transporter = nodemailer.createTransport({
                      "en": "Clinical Study Name"}
     }
 * */
-// TODO: Put HTML in separate files and add a parameter for the email type.
+// TODO: Put HTML in separate files and add a parameter for the email type
 exports.sendEmail = functions.https.onRequest(async (req, res) => {
 
     // Go through every email in the list and send email according to prefered language
