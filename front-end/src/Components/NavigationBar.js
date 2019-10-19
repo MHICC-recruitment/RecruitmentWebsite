@@ -25,7 +25,7 @@ export const NavigationBar = () => (
                     <Nav.Item><Nav.Link href="/">Accueil</Nav.Link></Nav.Item>
                     <Nav.Item><Nav.Link href="/etudescliniques">Études cliniques</Nav.Link></Nav.Item>
                     <Nav.Item><Nav.Link href="/apropos">À propos</Nav.Link></Nav.Item>
-                    <Nav.Item><Nav.Link href="/faq">faq</Nav.Link></Nav.Item>
+                    <Nav.Item><Nav.Link href="/faq">FAQ</Nav.Link></Nav.Item>
                     <Nav.Item><Nav.Link href="/questionnairepreliminaire">Questionnaire préliminaire</Nav.Link></Nav.Item>
                 </Nav>
             </Navbar.Collapse>
