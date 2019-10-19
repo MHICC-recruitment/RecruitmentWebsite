@@ -128,7 +128,12 @@ exports.findsAllUsersEligible = functions.https.onRequest( async (req, res) => {
     let listOfKeys = Object.keys(criterias);
     let tmp_list = db.collection('users');
     for(let item of listOfKeys){
-        tmp_list = tmp_list.where(item, "==", criterias[item]);
+        if (item == "dateOfBirth"){
+            // TODO Change operator
+        }
+        else{
+            tmp_list = tmp_list.where(item, "==", criterias[item]);
+        }
     }
 
     const eligibleUsers = await tmp_list.get();
@@ -220,6 +225,7 @@ let transporter = nodemailer.createTransport({
                      "en": "Clinical Study Name"}
     }
 * */
+// TODO: Put HTML in separate files and add a parameter for the email type
 exports.sendEmail = functions.https.onRequest(async (req, res) => {
 
     // Go through every email in the list and send email according to prefered language
