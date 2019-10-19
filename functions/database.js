@@ -7,6 +7,7 @@ admin.initializeApp();
 let db = admin.firestore();
 
 /* FUNCTIONS RELATED TO USERS*/
+
 /*
 *   This function adds a user to the database.
 *   POST:
@@ -45,8 +46,38 @@ exports.addUser = functions.https.onRequest(async (req, res) => {
 
 });
 
+/*
+*   This function adds information to an existing user in the database.
+*   POST:
+*   email: user's email
+*   userInfo: json containing the information available on the user
+*
+*   Example
+*   {
+*       "email":"janedoe@gmail.com",
+*       "userInfo": {
+*                       "diabetes": false,
+*                       "studyNotification": false
+*                   }
+*   }
+* */
 exports.addInfoOnUser = functions.https.onRequest(async(req, res) => {
-
+    // Verify user exists
+    user = await db.collection('users').doc(req.body.email).get();
+    if (user.exists)
+    {
+        const snapshot = await db.collection('users').doc(req.body.email).update(req.body.userInfo).catch(
+            (reason => {
+                console.error(reason);
+                res.send(reason);
+            }));
+        console.log(snapshot);
+        res.send("The user info has been added.")
+    }
+    else
+    {
+        res.send("The user doesn't exist.")
+    }
 });
 
 /*
@@ -76,6 +107,46 @@ exports.removeUser = functions.https.onRequest(async (req, res) => {
        res.send("This user is not in the database")
     }
 });
+
+
+/* FUNCTIONS RELATED TO CLINICAL STUDIES INFORMATION*/
+/*
+*   This function adds a study to the database. Every study has a unique ID.
+*   POST:
+*   info: json containing the information available on the study
+*
+*   Example
+*   {
+*       "info": {
+*                   "name": "Name",
+*                   "information": Information about the study
+*               }
+*   }
+* */
+exports.addClinicalStudy = functions.https.onRequest(async (req, res) => {
+    // Verify if clinical study already exists
+    clinicalStudyIDs = db.collection("clinicalStudies");
+    lastStudy = await clinicalStudyIDs.orderBy("id", "desc").limit(1).get();
+    newDataId = lastStudy.docs[0].data().id + 1;
+
+    Number.prototype.pad = function(size) {
+        var s = String(this);
+        while (s.length < (size || 2)) {s = "0" + s;}
+        return s;
+    };
+    let studyName = `study${(newDataId).pad(4)}`;
+    // Add clinical study
+    req.body.info.id = newDataId;
+    const snapshot = await db.collection('clinicalStudies').doc(studyName).set(req.body.info).catch(
+            (reason => {
+            console.error(reason);
+            res.send(reason);
+        }));
+    console.log(snapshot);
+    res.send("The clinical study has been added.")
+
+});
+
 
 /* FUNCTIONS RELATED TO EMAIL SENDING */
 const gmailEmail = functions.config().gmail.email;
@@ -171,8 +242,6 @@ exports.sendEmail = functions.https.onRequest((req, res) => {
     });
 });
 
-
-/* FUNCTIONS RELATED TO CLINICAL STUDIES INFORMATION*/
 
 
 /* FUNCTIONS RELATED TO ADMIN ACCESSES INFORMATION*/
