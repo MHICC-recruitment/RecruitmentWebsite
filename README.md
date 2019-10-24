@@ -11,7 +11,8 @@
 # Git
 Pour coder suggestions: Web Storm, VSCode  
 Pour git: GitKraken  
-git pull (tirer le code) 
-git add <fichier à ajouter>
+git pull (tirer le code)   
+git status (fichiers ajoutés ou non au commit)  
+git add <fichier à ajouter>  
 git commit -m "message des changements"  
 git push  
