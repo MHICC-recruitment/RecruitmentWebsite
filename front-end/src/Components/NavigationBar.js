@@ -30,7 +30,7 @@ export const NavigationBar = () => (
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id = "basic-navbar-nav">
-                <Nav className="ml-auto">
+                <Nav className="ml-auto" variant="tabs">
                     <Nav.Item><Nav.Link href="/">Accueil</Nav.Link></Nav.Item>
                     <Nav.Item><Nav.Link href="/etudescliniques">Études cliniques</Nav.Link></Nav.Item>
                     <Nav.Item><Nav.Link href="/apropos">À propos</Nav.Link></Nav.Item>
