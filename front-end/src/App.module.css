@@ -1,0 +1,41 @@
+/*.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: rgb(199, 202, 212);
+}*/
+
+
+.App-list-item-anchor:visited {
+  color: rgb(33, 40, 70);
+}
+.App-list-item-anchor:hover {
+  color: #756470;
+}
+
+/* Here is for Navigation Bar design */
+.Navigation-bar {
+  background-color: #697689;
+  color: #D9E3F0;
+}
+.Navigation-bar:visited{
+  color: #756470;
+}
+
+.Navigation-Logo{
+  width: 417;
+  height: 93;
+  alt: MHICC logo;
+}
