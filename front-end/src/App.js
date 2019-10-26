@@ -8,7 +8,6 @@ import {NoMatch} from './NoMatch';
 import {Layout} from './Components/Layout';
 import {NavigationBar} from './Components/NavigationBar';
 import {faq} from './faq';
-import {Jumbotron} from './Components/Jumbotron';
 
 class App extends Component{
   render() {
