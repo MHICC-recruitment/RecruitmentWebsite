@@ -7,6 +7,8 @@ import {questionnairepreliminaire} from './questionnairepreliminaire';
 import {NoMatch} from './NoMatch';
 import {Layout} from './Components/Layout';
 import {NavigationBar} from './Components/NavigationBar';
+import {faq} from './faq';
+import {Jumbotron} from './Components/Jumbotron';
 
 class App extends Component{
   render() {
@@ -20,6 +22,7 @@ class App extends Component{
               <Route path="/etudescliniques" component={etudescliniques} />
               <Route path="/questionnairepreliminaire" component={questionnairepreliminaire} />
               <Route path="/apropos" component={apropos} />
+              <Route path="/faq" component={faq} />
               <Route component={NoMatch} />
             </Switch>
           </Router>
