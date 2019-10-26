@@ -1,6 +1,7 @@
 const admin = require('firebase-admin')
 const functions = require('firebase-functions');
 const nodemailer = require('nodemailer');
+const fs = require('fs');
 const cors = require('cors')({origin: true});
 
 admin.initializeApp();
@@ -128,7 +129,7 @@ exports.findsAllUsersEligible = functions.https.onRequest( async (req, res) => {
     let listOfKeys = Object.keys(criterias);
     let tmp_list = db.collection('users');
     for(let item of listOfKeys){
-        if (item == "dateOfBirth"){
+        if (item === "dateOfBirth"){
             // TODO Change operator
         }
         else{
@@ -220,12 +221,13 @@ let transporter = nodemailer.createTransport({
                             "gender": "F"
                         }
                     }
-                ]
+                ],
+        "emailType": "elibility",
         "studyName":{"fr": "Nom de l'étude clinique",
                      "en": "Clinical Study Name"}
     }
 * */
-// TODO: Put HTML in separate files and add a parameter for the email type
+// TODO: add a parameter for the email type
 exports.sendEmail = functions.https.onRequest(async (req, res) => {
 
     // Go through every email in the list and send email according to prefered language
@@ -234,36 +236,8 @@ exports.sendEmail = functions.https.onRequest(async (req, res) => {
         const language = user[dest].lang;
         cors(req, res, () => {
             // getting dest email by query string
-            const englishEmail = `
-            <p style="font-size: 16px; font-family: Arial"> We are pleased to inform you that you are eligible for our new 
-            clinical trial ${req.body.studyName.en}. For more information or to register please go to the following link:
-            <a href="https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}">
-            https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}?lang=en
-            </a>
-            </p>
-            <br />
-            <img src="http://www.mhicc.org/images/mhicc_en.gif" />
-            <p style="font-size: 16px; font-family: Arial">
-            Montreal Health Innovations Coordinating Center <br />
-            4100 Molson St., Suite 400 <br />
-            Montreal, Quebec H1Y 3N1 <br />
-            Tel: 514-461-1300 </p>`;
-
-            const frenchEmail = `
-            <p style="font-size: 16px; font-family: Arial"> Nous avons le plaisir de vous annoncer que vous êtes éligible à
-            cette nouvelle étude clinique: ${req.body.studyName.fr}. Pour plus d'informations à propos de l'étude 
-            clinique ou pour vous y inscrire allez au lien suivant:
-            <a href="https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}">
-            https://www.mhicc-recruiting.org/clinicalStudies/${req.body.studyName.en}?lang=fr
-            </a>
-            </p>
-            <br />
-            <img src="http://www.mhicc.org/images/mhicc_fr.gif" />
-            <p style="font-size: 16px; font-family: Arial">
-            Centre de Coordination des Essais Cliniques de Montréal <br />
-            4100 Molson St., Suite 400 <br />
-            Montréal, Québec H1Y 3N1 <br />
-            Tél: 514–461–1300 </p>`;
+            const englishEmail = fs.readFileSync('email_templates/eligibilityEN.html');
+            const frenchEmail = fs.readFileSync('email_templates/eligibilityFR.html');
 
             let mailOptions;
             if (language === "en") {
@@ -271,14 +245,14 @@ exports.sendEmail = functions.https.onRequest(async (req, res) => {
                     from: 'MHICC Recruiting Team <${gmailEmail}>',
                     to: dest,
                     subject: 'Clinical Trial Eligibility', // email subject
-                    html: englishEmail// email content in HTML
+                    html: eval(englishEmail.toString())// email content in HTML
                 };
             } else if (language === "fr") {
                 mailOptions = {
                     from: 'Équipe de recrutement de MHICC <${gmailEmail}>',
                     to: dest,
                     subject: 'Éligibilité à une étude clinique', // email subject
-                    html: frenchEmail// email content in HTML
+                    html: eval(frenchEmail.toString())// email content in HTML
                 };
             }
             return transporter.sendMail(mailOptions);
@@ -289,7 +263,7 @@ exports.sendEmail = functions.https.onRequest(async (req, res) => {
         res.send(reason);
     });
 
-    return res.send('Sended');
+    return res.send('Sent');
 });
 
 
