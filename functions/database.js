@@ -201,6 +201,7 @@ let transporter = nodemailer.createTransport({
 *   POST:
 *   dest: list of users. FindAllUsersEligible returns this type of list
 *   studyName: json containing the french and english name of the study
+*   email: json containing the type of email (choice between: 'eligibility') and the object in each language
 *
 *   Example
 *   {
@@ -222,12 +223,17 @@ let transporter = nodemailer.createTransport({
                         }
                     }
                 ],
-        "emailType": "elibility",
-        "studyName":{"fr": "Nom de l'étude clinique",
-                     "en": "Clinical Study Name"}
+	"studyName":{"fr": "Perte de cheveux chez les femmes",
+				 "en": "Female Hair Loss"},
+	"email": {
+            	"type": "elibility",
+                "object": {
+                			"fr": "Éligibilité à une étude clinique",
+                        	"en": "Clinical Trial Eligibility"
+                		  }
+                 }
     }
 * */
-// TODO: add a parameter for the email type
 exports.sendEmail = functions.https.onRequest(async (req, res) => {
 
     // Go through every email in the list and send email according to prefered language
@@ -235,23 +241,23 @@ exports.sendEmail = functions.https.onRequest(async (req, res) => {
         const dest = Object.keys(user)[0];
         const language = user[dest].lang;
         cors(req, res, () => {
-            // getting dest email by query string
-            const englishEmail = fs.readFileSync('email_templates/eligibilityEN.html');
-            const frenchEmail = fs.readFileSync('email_templates/eligibilityFR.html');
+            // getting email type with language
+            const englishEmail = fs.readFileSync(`email_templates/${req.body.email.type}EN.html`);
+            const frenchEmail = fs.readFileSync(`email_templates/${req.body.email.type}FR.html`);
 
             let mailOptions;
             if (language === "en") {
                 mailOptions = {
                     from: 'MHICC Recruiting Team <${gmailEmail}>',
                     to: dest,
-                    subject: 'Clinical Trial Eligibility', // email subject
+                    subject: req.body.email.object.en, // email subject
                     html: eval(englishEmail.toString())// email content in HTML
                 };
             } else if (language === "fr") {
                 mailOptions = {
                     from: 'Équipe de recrutement de MHICC <${gmailEmail}>',
                     to: dest,
-                    subject: 'Éligibilité à une étude clinique', // email subject
+                    subject: req.body.email.object.fr, // email subject
                     html: eval(frenchEmail.toString())// email content in HTML
                 };
             }
