@@ -1,0 +1,50 @@
+/*.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: rgb(199, 202, 212);
+}
+
+.App-link {
+  color: #09d3ac;
+}*/
+
+.App-list-item-anchor:visited {
+  color: rgb(33, 40, 70);
+}
+.App-list-item-anchor:hover {
+  color: #756470;
+}
+
+/* Here is for page d'accueil*/
+.Main-page{
+  background-color: rgb(238, 238, 238);
+  color: rgb(38, 39, 41);
+}
+
+/* Here is for Navigation Bar design */
+.Navigation-bar {
+  color: rgb(33, 40, 70);
+  height: 100;
+}
+.Navigation-bar:visited{
+  color: #756470;
+}
+
+.Navigation-Logo{
+  width: 417;
+  height: 80;
+  alt: MHICC logo;
+}
