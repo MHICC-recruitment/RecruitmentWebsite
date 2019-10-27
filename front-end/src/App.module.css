@@ -15,8 +15,11 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: rgb(199, 202, 212);
-}*/
+}
 
+.App-link {
+  color: #09d3ac;
+}*/
 
 .App-list-item-anchor:visited {
   color: rgb(33, 40, 70);
@@ -25,10 +28,16 @@
   color: #756470;
 }
 
+/* Here is for page d'accueil*/
+.Main-page{
+  background-color: rgb(238, 238, 238);
+  color: rgb(38, 39, 41);
+}
+
 /* Here is for Navigation Bar design */
 .Navigation-bar {
-  background-color: #697689;
-  color: #D9E3F0;
+  color: rgb(33, 40, 70);
+  height: 100;
 }
 .Navigation-bar:visited{
   color: #756470;
@@ -36,6 +45,6 @@
 
 .Navigation-Logo{
   width: 417;
-  height: 93;
+  height: 80;
   alt: MHICC logo;
 }
