@@ -62,78 +62,81 @@ exports.updateAge = functions.https.onRequest(async (req, res) => {
 });
 
 /*
-*   This function adds information to an existing user in the database.
+*   This function adds information to an existing collection in the database.
 *   POST:
-*   email: user's email
+*   collection: users or clinicalStudies
+*   document: user's email or study ID
 *   userInfo: json containing the information available on the user
 *
 *   Example
 *   {
-*       "email":"janedoe@gmail.com",
+*       "collection":"users:,
+*       "document":"janedoe@gmail.com",
 *       "userInfo": {
 *                       "diabetes": false,
 *                       "studyNotification": false
 *                   }
 *   }
 * */
-exports.addInfoOnUser = functions.https.onRequest(async(req, res) => {
+exports.addInfoInDatabase = functions.https.onRequest(async(req, res) => {
     // Verify user exists
-    let user = await db.collection('users').doc(req.body.email).get();
-    if (user.exists)
+    let doc = await db.collection(req.body.collection).doc(req.body.document).get();
+    if (doc.exists)
     {
-        const snapshot = await db.collection('users').doc(req.body.email).update(req.body.userInfo).catch(
+        const snapshot = await db.collection(req.body.collection).doc(req.body.document).update(req.body.userInfo).catch(
             (reason => {
                 console.error(reason);
                 res.send(reason);
             }));
         console.log(snapshot);
-        res.send("The user info has been added.")
+        res.send("The document info has been added.")
     }
     else
     {
-        res.send("The user doesn't exist.")
+        res.send("The document doesn't exist.")
     }
 });
 
 /*
-*   This function removes the information related to a specific user.
+*   This function removes the information related to a specific document (user or clinical study).
 *   POST:
-*   email: email related to the user's info to be deleted
+*   collection: 'users' or 'clinicalStudies'
+*   document: email related to the user's info to be deleted or clinical study ID
 *
 *   Example
 *   {
-*       "email":"janedoe@gmail.com"
+*       "collection":"users"
+*       "document":"janedoe@gmail.com"
 *   }
 * */
 exports.removeUser = functions.https.onRequest(async (req, res) => {
-    let docToDelete = await db.collection('users').doc(req.body.email).get();
+    let docToDelete = await db.collection(req.body.collection).doc(req.body.document).get();
 
     if (docToDelete.exists)
     {
-        const snapshot = await db.collection('users').doc(req.body.email).delete().catch((reason => {
+        const snapshot = await db.collection(req.body.collection).doc(req.body.document).delete().catch((reason => {
             console.error(reason);
             res.send(reason);
         }));
         console.log(snapshot);
-        res.send("The user has been removed.")
+        res.send("The document has been removed.")
     }
     else
     {
-       res.send("This user is not in the database")
+       res.send("This document is not in the database")
     }
 });
 
 /*
-*   This functions verifies and extracts the users eligible according to given criterias.
+*   This functions verifies and extracts the users eligible according to given criteria.
 *   POST:
-*   criterias: Json containing the criterias
-*   studyName: Json containing the French and English name of the study
+*   criteria: Json containing the criteria
 *
 *   Return: List of all users eligible with their related data.
 *
 *   Example
 *   {
-	    "criterias": {"gender":
+	    "criteria": {"gender":
 	                    {"value": ["F"],
 	                     "operator": ["=="]},
 	                   "studyNotification":
@@ -144,26 +147,29 @@ exports.removeUser = functions.https.onRequest(async (req, res) => {
 	                     "operator": ["=="]},
 	                    "age":
 	                    {"value": [18, 45],
-	                     "operator": [">=", "<="]}}
+	                     "operator": [">=", "<="]}},
+	    "collection": "users"
      }
 * */
 
 exports.findsAllUsersEligible = functions.https.onRequest( async (req, res) => {
-    let criterias = req.body.criterias;
-    let listOfKeys = Object.keys(criterias);
+    let criteria = req.body.criteria;
+    let listOfKeys = Object.keys(criteria);
     let usersRef = db.collection('users');
     let listOfEligibleUsers = [];
     for(let item of listOfKeys){
-        for(let i = 0; i < criterias[item].value.length; i++){
-            let usersEligible = usersRef.where(item, criterias[item].operator[i], criterias[item].value[i]);
-            const eligibleUsersPromise = await usersEligible.get();
+        for(let i = 0; i < criteria[item].value.length; i++){
+            const eligibleUsersPromise = await usersRef.where(item, criteria[item].operator[i], criteria[item].value[i]).get();
             let tmpList = eligibleUsersPromise.docs.map(value => ({[`${value.id}`]: value.data()}));
+            // Initialize list
             if (listOfEligibleUsers.length === 0){
                 listOfEligibleUsers = tmpList;
             }
             else{
+                // Keep intersection of both lists
                 let retainedEmails = _.intersection(listOfEligibleUsers.map(value => Object.keys(value)[0]),
                                                     tmpList.map(value => Object.keys(value)[0]));
+                // Return whole data on each user
                 listOfEligibleUsers = tmpList.map(user => {
                     if (retainedEmails.includes(Object.keys(user)[0])) {
                         return user;
@@ -173,7 +179,6 @@ exports.findsAllUsersEligible = functions.https.onRequest( async (req, res) => {
             }
         }
     }
-
 
     res.send(listOfEligibleUsers)
 
@@ -218,6 +223,56 @@ exports.addClinicalStudy = functions.https.onRequest(async (req, res) => {
     res.send("The clinical study has been added.")
 
 });
+
+
+/*
+*   This functions extracts clinical study IDs respecting given criteria.
+*   POST:
+*   criteria: Json containing the criteria
+*
+*   Return: List of clinical study IDs respecting criteria.
+*
+*   Example
+*   {
+	    "criteria": {"gender": "F", "age": 18}
+     }
+*/
+exports.filtersClinicalStudies = functions.https.onRequest( async (req, res) => {
+    let criteria = req.body.criteria;
+    let listOfKeys = Object.keys(criteria);
+    let studiesRef = db.collection('clinicalStudies');
+    let listOfEligibleStudies = [];
+    for(let item of listOfKeys){
+        let tmpList = [];
+        if (item === 'age'){
+            const studiesPromise = await studiesRef.get();
+            studiesPromise.forEach( doc => {
+                if (doc.data().age){
+                    let ageRange = doc.data().age;
+                    if (criteria[item] >= ageRange[0] && criteria[item] <= ageRange[1]){
+                        tmpList.push(doc.id);
+                    }
+                }
+            })
+        }
+        else{
+            const studiesEligible = await studiesRef.where(item, '==', criteria[item]).get();
+            tmpList = studiesEligible.docs.map(value => ({[`${value.id}`]: value.data()}));
+        }
+        // Initialize list
+        if (listOfEligibleStudies.length === 0){
+            listOfEligibleStudies = tmpList;
+        }
+        else{
+            // Keep intersection of both lists
+            listOfEligibleStudies = _.intersection(listOfEligibleStudies.map(value => Object.keys(value)[0]),
+                                                   tmpList.map(value => Object.keys(value)[0]));
+        }
+    }
+
+    res.send(listOfEligibleStudies)
+});
+
 
 /* FUNCTIONS RELATED TO EMAIL SENDING */
 const gmailEmail = functions.config().gmail.email;
