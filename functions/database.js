@@ -1,8 +1,10 @@
-const admin = require('firebase-admin')
+const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const cors = require('cors')({origin: true});
+const now = admin.firestore.Timestamp.now();
+const _ = require('lodash');
 
 admin.initializeApp();
 let db = admin.firestore();
@@ -45,6 +47,18 @@ exports.addUser = functions.https.onRequest(async (req, res) => {
         res.send("The user already exists.")
     }
 
+});
+
+exports.updateAge = functions.https.onRequest(async (req, res) => {
+    const usersRef = db.collection('users');
+    const allUsers = await usersRef.get();
+    allUsers.forEach(doc => {
+                if (doc.data().birthDate){
+                    let newAge = now.toDate().getFullYear() - doc.data().birthDate.toDate().getFullYear();
+                    usersRef.doc(doc.id).update({"age": newAge});
+                }
+            });
+    res.send("Age updated")
 });
 
 /*
@@ -119,26 +133,47 @@ exports.removeUser = functions.https.onRequest(async (req, res) => {
 *
 *   Example
 *   {
-	    "criterias": {"gender":"F", "smoker":true},
-	    "studyName": {"en": "English study name",  "fr": "French study name"}
+	    "criterias": {"gender":
+	                    {"value": ["F"],
+	                     "operator": ["=="]},
+	                   "studyNotification":
+	                    {"value": [true],
+	                     "operator": ["=="]},
+	                   "smoker":
+	                    {"value": [true],
+	                     "operator": ["=="]},
+	                    "age":
+	                    {"value": [18, 45],
+	                     "operator": [">=", "<="]}}
      }
 * */
 
 exports.findsAllUsersEligible = functions.https.onRequest( async (req, res) => {
     let criterias = req.body.criterias;
     let listOfKeys = Object.keys(criterias);
-    let tmp_list = db.collection('users');
+    let usersRef = db.collection('users');
+    let listOfEligibleUsers = [];
     for(let item of listOfKeys){
-        if (item === "dateOfBirth"){
-            // TODO Change operator
-        }
-        else{
-            tmp_list = tmp_list.where(item, "==", criterias[item]);
+        for(let i = 0; i < criterias[item].value.length; i++){
+            let usersEligible = usersRef.where(item, criterias[item].operator[i], criterias[item].value[i]);
+            const eligibleUsersPromise = await usersEligible.get();
+            let tmpList = eligibleUsersPromise.docs.map(value => ({[`${value.id}`]: value.data()}));
+            if (listOfEligibleUsers.length === 0){
+                listOfEligibleUsers = tmpList;
+            }
+            else{
+                let retainedEmails = _.intersection(listOfEligibleUsers.map(value => Object.keys(value)[0]),
+                                                    tmpList.map(value => Object.keys(value)[0]));
+                listOfEligibleUsers = tmpList.map(user => {
+                    if (retainedEmails.includes(Object.keys(user)[0])) {
+                        return user;
+                    }
+                    return null;
+                }).filter(email => email!==null)
+            }
         }
     }
 
-    const eligibleUsers = await tmp_list.get();
-    let listOfEligibleUsers = eligibleUsers.docs.map(value => ({[`${value.id}`]: value.data()}));
 
     res.send(listOfEligibleUsers)
 
