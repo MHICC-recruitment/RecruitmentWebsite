@@ -7,7 +7,7 @@ export const NavigationBar = () => (
   <div className={styles["Navigation-bar"]}>
     Tel : 514-461-1300
     <Navbar expand="lg" sticky="top">
-      <Navbar.Brand>
+      <Navbar.Brand href="/">
         <div className={styles["Navigation-Logo"]}>
           <img src={MHICC} className="d-inline-block align-top" />
         </div>
