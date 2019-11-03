@@ -8,6 +8,7 @@ const fs = require('fs');
 const cors = require('cors')({origin: true});
 const now = admin.firestore.Timestamp.now();
 const _ = require('lodash');
+const mainModule = require('./index.js');
 
 let db = admin.firestore();
 
@@ -55,8 +56,8 @@ exports.addInfo = () => functions.https.onRequest(async(req, res) => {
 *
 *   Example
 *   {
-*       "collection":"users"
-*       "document":"janedoe@gmail.com"
+*       "collection":"users",
+*       "document":"untel@gmail.com"
 *   }
 * */
 exports.removeInfo = () => functions.https.onRequest(async (req, res) => {
@@ -69,11 +70,12 @@ exports.removeInfo = () => functions.https.onRequest(async (req, res) => {
             res.send(reason);
         }));
         console.log(snapshot);
-        res.send("The document has been removed.")
+        mainModule.exportData();
+        res.send("The document has been removed.");
     }
     else
     {
-       res.send("This document is not in the database")
+       res.send("This document is not in the database.")
     }
 });
 
