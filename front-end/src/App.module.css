@@ -68,3 +68,49 @@ section {
   height: 80;
   alt: MHICC logo;
 }
+
+.Filter-Box {
+  border-radius: 4px;
+  background-color: lightgray;;
+  width: 60rem;
+  padding: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top:30px;
+  margin-bottom:30px;
+}
+
+.input-age{
+  border: 2px solid gray;
+  border-radius: 4px;
+  width: 10rem;
+  -webkit-transition: width 0.3s ease-in-out;
+  transition: width 0.3s ease-in-out;
+}
+.input-age:focus{
+  width: 2rem;
+  border: 2px solid lightblue;
+}
+.input-age:focus::-webkit-input-placeholder { 
+  color: transparent; 
+}
+
+.input-nom{
+  border: 2px solid gray;
+  border-radius: 4px;
+  width: 15rem;
+}
+.input-nom:focus{
+  border: 2px solid lightblue;
+}
+.input-nom:focus::-webkit-input-placeholder { 
+  color: transparent; 
+}
+
+.input-sexe{
+  border: 2px solid gray;
+  border-radius: 4px;
+  width: 15rem;
+  background-color:white;
+}
+
