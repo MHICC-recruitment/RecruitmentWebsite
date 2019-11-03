@@ -8,7 +8,8 @@ export const Etude = (props) => (
       <Card.Header>{props.name}</Card.Header>
         <Card.Body>
           <Card.Title>{props.title}</Card.Title>
-          <Card.Text>Age : {props.age} ans</Card.Text>
+          <Card.Text>Age : Entre {props.ageMin} ans et {props.ageMax} ans</Card.Text> 
+          <Card.Text>Sexe : {props.sexe}</Card.Text>
         </Card.Body>
         <Card.Footer>
           <small className="text-muted">Date de début: {props.date}</small>
@@ -18,8 +19,8 @@ export const Etude = (props) => (
 )
 
 export const ListeEtudes = (props) => {
-    let etudes = props.filteredEtudes.map((etude,i) =>{
-        return <Etude key ={i} name={etude.name} title={etude.title} age={etude.age} date={etude.date} />
+    let etudes = props.filteredEtudes.map((etude) =>{
+        return <Etude key ={etude.id} name={etude.name} title={etude.title} ageMin={etude.ageMin} ageMax={etude.ageMax} sexe={etude.sexe} date={etude.date} />
     })
     return (
         <div>
