@@ -10,7 +10,7 @@ const now = admin.firestore.Timestamp.now();
 
 const firestore = require('@google-cloud/firestore');
 
-const bucket = 'gs://mhicc-recruitment.appspot.com';
+const bucket = 'gs://mhicc-recruitment.appspot.com/backup';
 
 exports.addInfo = databaseModule.addInfo();
 exports.removeInfo = databaseModule.removeInfo();
@@ -25,11 +25,9 @@ exports.addClinicalStudy = clinicalStudiesModule.addClinicalStudy();
 exports.filtersClinicalStudies = clinicalStudiesModule.filtersClinicalStudies();
 
 /*
-    Function backups the database every 24 hours. To restore run the following
-    gcloud firestore import gs://mhicc-recruitment/{DataToBeRestored}/
+    Function backups the database every 24 hours. To restore run the following in the projects terminal:
+    gcloud firestore import gs://mhicc-recruitment.appspot.com/backup
 
-    Copy the bucket url from the link:
-    https://console.firebase.google.com/u/0/project/mhicc-recruitment/storage/mhicc-recruitment.appspot.com/files
 */
 
 exports.scheduledFirestoreUpdateAge = functions.pubsub
@@ -37,13 +35,11 @@ exports.scheduledFirestoreUpdateAge = functions.pubsub
     .onRun(async (context) => {
         const usersRef = db.collection('users');
         const allUsers = await usersRef.get();
-        console.log(':O');
         console.log(allUsers);
         allUsers.forEach(doc => {
             if (doc.data().birthDate){
                 let newAge = now.toDate().getFullYear() - doc.data().birthDate.toDate().getFullYear();
                 usersRef.doc(doc.id).update({"age": newAge});
-                console.log(doc.id)
             }
         });
     });
@@ -69,7 +65,9 @@ const exportData = exports.exportData = function() {
 };
 
 exports.scheduledFirestoreExport = functions.pubsub
-    .schedule('every 24 hours')
+    .schedule('every 72 hours')
     .onRun((context) => {
         return exportData();
     });
+
+
