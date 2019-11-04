@@ -25,9 +25,9 @@ exports.addClinicalStudy = clinicalStudiesModule.addClinicalStudy();
 exports.filtersClinicalStudies = clinicalStudiesModule.filtersClinicalStudies();
 
 /*
-    Function backups the database every 24 hours. To restore run the following in the projects terminal:
-    gcloud firestore import gs://mhicc-recruitment.appspot.com/backup
+    This function once called updates the field 'age' for every subject having a birth date in the database.
 
+    The function doesn't return anything and doesn't require any parameter.
 */
 
 exports.scheduledFirestoreUpdateAge = functions.pubsub
@@ -64,6 +64,11 @@ const exportData = exports.exportData = function() {
         });
 };
 
+/*
+    Function backups the database every 24 hours. To restore run the following in the projects terminal:
+    gcloud firestore import gs://mhicc-recruitment.appspot.com/backup
+
+*/
 exports.scheduledFirestoreExport = functions.pubsub
     .schedule('every 72 hours')
     .onRun((context) => {

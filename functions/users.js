@@ -47,27 +47,6 @@ exports.addUser = () => functions.https.onRequest(async (req, res) => {
 
 
 /*
-*   This function once called updates the field 'age' for every subject having a birth date in the database.
-*
-*   The function doesn't return anything and doesn't require any parameter.
-*
-* */
-// exports.updateAge = () => functions.https.onRequest(async (req, res) => {
-//     const usersRef = db.collection('users');
-//     const allUsers = await usersRef.get();
-//     console.log(':O');
-//     console.log(allUsers);
-//     allUsers.forEach(doc => {
-//         if (doc.data().birthDate){
-//             let newAge = now.toDate().getFullYear() - doc.data().birthDate.toDate().getFullYear();
-//             usersRef.doc(doc.id).update({"age": newAge});
-//             console.log(doc.id)
-//         }
-//     });
-//     res.send("Age updated")
-// });
-
-/*
 *   This functions verifies and extracts the users eligible according to given criteria.
 *   POST:
 *   criteria: Json containing the criteria
