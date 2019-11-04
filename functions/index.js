@@ -5,9 +5,10 @@ const databaseModule = require('./database.js');
 const emailModule = require('./email.js');
 const usersModule = require('./users.js');
 const clinicalStudiesModule = require('./clinicalStudies.js');
+let db = admin.firestore();
+const now = admin.firestore.Timestamp.now();
 
 const firestore = require('@google-cloud/firestore');
-const client = new firestore.v1.FirestoreAdminClient();
 
 const bucket = 'gs://mhicc-recruitment.appspot.com';
 
@@ -18,7 +19,7 @@ exports.sendEmail = emailModule.sendEmail();
 
 exports.addUser = usersModule.addUser();
 exports.findsAllUsersEligible = usersModule.findsAllUsersEligible();
-exports.updateAge = usersModule.updateAge();
+// exports.updateAge = usersModule.updateAge();
 
 exports.addClinicalStudy = clinicalStudiesModule.addClinicalStudy();
 exports.filtersClinicalStudies = clinicalStudiesModule.filtersClinicalStudies();
@@ -30,14 +31,25 @@ exports.filtersClinicalStudies = clinicalStudiesModule.filtersClinicalStudies();
     Copy the bucket url from the link:
     https://console.firebase.google.com/u/0/project/mhicc-recruitment/storage/mhicc-recruitment.appspot.com/files
 */
-exports.scheduledFirestoreExport = functions.pubsub
-    .schedule('every 24 hours')
-    .onRun((context) => {
-        exportData();
 
+exports.scheduledFirestoreUpdateAge = functions.pubsub
+    .schedule('every 24 hours')
+    .onRun(async (context) => {
+        const usersRef = db.collection('users');
+        const allUsers = await usersRef.get();
+        console.log(':O');
+        console.log(allUsers);
+        allUsers.forEach(doc => {
+            if (doc.data().birthDate){
+                let newAge = now.toDate().getFullYear() - doc.data().birthDate.toDate().getFullYear();
+                usersRef.doc(doc.id).update({"age": newAge});
+                console.log(doc.id)
+            }
+        });
     });
 
-exports.exportData = async () => {
+const exportData = exports.exportData = function() {
+    const client = new firestore.v1.FirestoreAdminClient();
     const databaseName = client.databasePath(process.env.GCP_PROJECT, '(default)');
 
     return client.exportDocuments({
@@ -54,5 +66,10 @@ exports.exportData = async () => {
             console.error(err);
             throw new Error('Export operation failed');
         });
-
 };
+
+exports.scheduledFirestoreExport = functions.pubsub
+    .schedule('every 24 hours')
+    .onRun((context) => {
+        return exportData();
+    });
