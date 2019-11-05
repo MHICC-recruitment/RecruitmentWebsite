@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import Breadcrumb from "react-bootstrap/Breadcrumb";
 import styles from "./App.module.css";
 
 export const accueil = () => (
   <div className={styles["Main-page"]}>
+    <Breadcrumb>
+      <Breadcrumb.Item active>Accueil</Breadcrumb.Item>
+    </Breadcrumb>
     <section id="accueil">
       <h1>Welcome</h1>
       <p>
