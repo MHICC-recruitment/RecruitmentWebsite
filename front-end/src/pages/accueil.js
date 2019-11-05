@@ -5,25 +5,23 @@ import Breadcrumb from "react-bootstrap/Breadcrumb";
 import styles from "./accueil.css";
 
 export const accueil = () => (
-  <div className={styles["Main-page"]}>
+  <div id = "MainPage" className = {styles["Main-Page"]}>
     <Breadcrumb>
       <Breadcrumb.Item active>Accueil</Breadcrumb.Item>
     </Breadcrumb>
-    <section id="accueil">
+
+    <section id = "Welcome">
       <h1>Welcome</h1>
-      <p>
+      <h2>
         The MHICC strives to conduct clinical trials efficiently and effectively
-        through innocation in order to fulfill our customer needs
-      </p>
+        through innovation in order to fulfill our customer needs.
+      </h2>
     </section>
     <br />
 
-    <section id="accueilabout">
-      <Card className="text-center" bg="dark" text="white">
-        <Card.Body>
-          <Card.Title>About the MHICC/Qui sommes-nous?</Card.Title>
-          <Card.Text>
-            The MHICC strives to conduct clinical trials efficiently and
+    <section id = "Main_about">
+      <h1>About the MHICC/Qui sommes-nous?</h1>
+      <p>The MHICC strives to conduct clinical trials efficiently and
             effectively through innocation in order to fulfill our customer
             needshe MHICC strives to conduct clinical trials efficiently and
             effectively through innocation in order to fulfill our customer
@@ -33,14 +31,10 @@ export const accueil = () => (
             effectively through innocation in order to fulfill our customer
             needshe MHICC strives to conduct clinical trials efficiently and
             effectively through innocation in order to fulfill our customer
-            needs
-          </Card.Text>
-          <Card.Link href="/apropos">Venez lire sur notre mission</Card.Link>
-        </Card.Body>
-      </Card>
+            needs</p>
+        href="/apropos">Venez lire sur notre mission
     </section>
     <br />
-
     <section id="accueilhowitworks">
       <Card className="text-center" bg="info" text="white">
         <Card.Body>

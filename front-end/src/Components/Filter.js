@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../App.module.css";
+import styles from "../pages/etudescliniques.css";
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
