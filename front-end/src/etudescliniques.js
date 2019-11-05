@@ -82,7 +82,7 @@ export class etudescliniques extends Component {
     return (
       <div>
         <Breadcrumb>
-          <Breadcrumb.Item href="/accueil">Accueil</Breadcrumb.Item>
+          <Breadcrumb.Item href="/">Accueil</Breadcrumb.Item>
           <Breadcrumb.Item active>Études cliniques</Breadcrumb.Item>
         </Breadcrumb>
         <h2> Études cliniques</h2>

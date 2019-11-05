@@ -6,7 +6,7 @@ import Breadcrumb from "react-bootstrap/Breadcrumb";
 export const faq = () => (
   <div>
     <Breadcrumb>
-      <Breadcrumb.Item href="/accueil">Accueil</Breadcrumb.Item>
+      <Breadcrumb.Item href="/">Accueil</Breadcrumb.Item>
       <Breadcrumb.Item active>FAQ</Breadcrumb.Item>
     </Breadcrumb>
 
