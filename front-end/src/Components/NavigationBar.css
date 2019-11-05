@@ -1,0 +1,14 @@
+/* Here is for Navigation Bar design */
+
+.Navigation-bar {
+    text-transform: uppercase;
+    text-decoration: none;
+    color: rgba(165, 165, 165,7);
+  }
+  
+  .Navigation-Logo{
+    width: 417;
+    height: 80;
+    alt: MHICC logo;
+  }
+  
