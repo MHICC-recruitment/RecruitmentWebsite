@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { accueil } from "./accueil";
-import { fonctionnement } from "./fonctionnement";
-import { etudescliniques } from "./etudescliniques";
-import { apropos } from "./apropos";
-import { questionnairepreliminaire } from "./questionnairepreliminaire";
-import { NoMatch } from "./NoMatch";
+import { accueil } from "./pages/accueil";
+import { fonctionnement } from "./pages/fonctionnement";
+import { etudescliniques } from "./pages/etudescliniques";
+import { apropos } from "./pages/apropos";
+import { questionnairepreliminaire } from "./pages/questionnairepreliminaire";
+import { NoMatch } from "./pages/NoMatch";
 import { Layout } from "./Components/Layout";
 import { NavigationBar } from "./Components/NavigationBar";
-import { faq } from "./faq";
+import { faq } from "./pages/faq";
 
 class App extends Component {
   render() {

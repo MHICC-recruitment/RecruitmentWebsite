@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
-import styles from "./App.module.css";
+import styles from "./accueil.css";
 
 export const accueil = () => (
   <div className={styles["Main-page"]}>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Nav, Navbar, Button } from "react-bootstrap";
 import MHICC from "../assets/mhicc_fr.jpg";
-import styles from "../App.module.css";
+import styles from "./NavigationBar.css";
 
 export const NavigationBar = () => (
   <div className={styles["Navigation-bar"]}>

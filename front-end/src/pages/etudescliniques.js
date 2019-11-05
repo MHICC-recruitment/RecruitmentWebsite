@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Filter } from "./Components/Filter";
-import { ListeEtudes } from "./Components/ListeEtudes";
-import styles from "./App.module.css";
+import { Filter } from "../Components/Filter";
+import { ListeEtudes } from "../Components/ListeEtudes";
+import styles from "./etudescliniques.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export class etudescliniques extends Component {
