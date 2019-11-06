@@ -1,9 +1,8 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-const now = admin.firestore.Timestamp.now();
 const _ = require('lodash');
 
-let db = admin.firestore();
+var db = admin.firestore();
 
 /* FUNCTIONS RELATED TO USERS*/
 
@@ -26,7 +25,7 @@ let db = admin.firestore();
 * */
 exports.addUser = () => functions.https.onRequest(async (req, res) => {
     // Verify if email already exists
-    let userToBeAdded = await db.collection('users').doc(req.body.email).get();
+    let userToBeAdded = await db.collection('users').doc(req.body.email).get()
     if (!userToBeAdded.exists)
     {
         // Add user
@@ -36,7 +35,7 @@ exports.addUser = () => functions.https.onRequest(async (req, res) => {
                 res.send(reason);
             }));
         console.log(snapshot);
-        res.send("The user has been added.")
+        res.send("The user has been added.");
     }
     else
     {
