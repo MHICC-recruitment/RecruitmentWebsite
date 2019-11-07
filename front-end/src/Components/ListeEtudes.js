@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 
 export const Etude = (props) => (
     <div>
-    <Card style={{ marginBottom: '1rem', width: '18rem' }}>
+    <Card style={{ marginBottom: '1rem', width: '15rem' }}>
       <Card.Header>{props.name}</Card.Header>
         <Card.Body>
           <Card.Title>{props.title}</Card.Title>

@@ -1,44 +1,41 @@
 .box{
   border-radius: 4px;
   background-color: lightgray;
-  width: 60rem;
-  padding: 1em;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top:30px;
-  margin-bottom:30px;
+  padding: 5%;
   }
   
-  .input-age{
+  .inputAge{
     border: 2px solid gray;
     border-radius: 4px;
-    width: 10rem;
+    width: 70%;
     -webkit-transition: width 0.3s ease-in-out;
     transition: width 0.3s ease-in-out;
+    margin : 3px;
   }
-  .input-age:focus{
-    width: 2rem;
+  .inputAge:focus{
+    width: 20%;
     border: 2px solid lightblue;
   }
-  .input-age:focus::-webkit-input-placeholder { 
+  .inputAge:focus::-webkit-input-placeholder { 
     color: transparent; 
   }
   
-  .input-nom{
+  .inputNom{
     border: 2px solid gray;
     border-radius: 4px;
     width: 15rem;
+    margin : 3px;
   }
-  .input-nom:focus{
+  .inputNom:focus{
     border: 2px solid lightblue;
   }
-  .input-nom:focus::-webkit-input-placeholder { 
+  .inputNom:focus::-webkit-input-placeholder { 
     color: transparent; 
   }
   
-  .input-sexe{
+  .inputSexe{
     border: 2px solid gray;
     border-radius: 4px;
-    width: 15rem;
     background-color:white;
+    margin : 3px;
   }

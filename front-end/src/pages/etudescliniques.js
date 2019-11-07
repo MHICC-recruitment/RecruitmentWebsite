@@ -3,6 +3,8 @@ import { Filter } from "../Components/Filter";
 import { ListeEtudes } from "../Components/ListeEtudes";
 import styles from "./etudescliniques.css";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 export class etudescliniques extends Component {
   constructor(props) {
@@ -87,12 +89,18 @@ export class etudescliniques extends Component {
         </Breadcrumb>
         <h2> Études cliniques</h2>
         <p>Voici les études cliniques en cours.</p>
-        <Filter
-          handleAge={this.handleAge}
-          handleInput={this.handleInput}
-          handleSexe={this.handleSexe}
-        />
-        <ListeEtudes filteredEtudes={filteredEtudes} />
+        <Row>
+          <Col sm={3}>
+          <Filter
+            handleAge={this.handleAge}
+            handleInput={this.handleInput}
+            handleSexe={this.handleSexe}
+          />
+          </Col>
+          < Col sm={9}>
+            <ListeEtudes filteredEtudes={filteredEtudes} />
+          </Col>
+        </Row>
       </div>
     );
   }
