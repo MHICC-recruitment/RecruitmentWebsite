@@ -1,11 +1,11 @@
 import React from "react";
-import styles from "../pages/etudescliniques.css";
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+import styles from "./Filter.css";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 export const Filter = (props) => {
     return (
-        <div className={styles["Filter-Box"]}>
+        <div className = {styles.box}>
             <Row>
                 <Col>
                 Age :
