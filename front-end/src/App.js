@@ -8,6 +8,7 @@ import { questionnairepreliminaire } from "./pages/questionnairepreliminaire";
 import { NoMatch } from "./pages/NoMatch";
 import { Layout } from "./Components/Layout";
 import { NavigationBar } from "./Components/NavigationBar";
+import {Footer} from './Components/Footer';
 import { faq } from "./pages/faq";
 
 class App extends Component {
@@ -31,6 +32,7 @@ class App extends Component {
             </Switch>
           </Router>
         </Layout>
+        <Footer class = 'fixed-bottom'/>
       </React.Fragment>
     );
   }

@@ -3,6 +3,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import styles from "./accueil.css";
+import { ListeEtudes } from "../Components/ListeEtudes";
 
 export const accueil = () => (
   <div id = "MainPage" className = {styles["Main-Page"]}>
@@ -10,7 +11,7 @@ export const accueil = () => (
       <Breadcrumb.Item active>Accueil</Breadcrumb.Item>
     </Breadcrumb>
 
-    <section id = "Welcome">
+    <section id = "Main_Welcome">
       <h1>Welcome</h1>
       <h2>
         The MHICC strives to conduct clinical trials efficiently and effectively
@@ -35,7 +36,7 @@ export const accueil = () => (
       <Button variant = "outline-light" href = "/apropos"> Venez lire sur notre mission</Button>
     </section>
     <br />
-    <section id="accueilhowitworks">
+    <section id="Main_howitworks">
       <h1>How it works/Le fonctionnement des études cliniques</h1>
         <p>Les études cliniques sont une part essentielle du développement de
             nouveaux traitements. Malheureusement, recruter des patients
@@ -57,7 +58,7 @@ export const accueil = () => (
       <br />
     </section>
 
-    <section id="accueilclinicalstudies">
+    <section id="Main_clinicalstudies">
       <h1>Nos études cliniques</h1>
           <p>
             Plusieurs études sont actuellement en cours de recrutement. Vous
@@ -65,11 +66,11 @@ export const accueil = () => (
             cliniques ou faire le quiz interactif pour découvrir si vous êtes
             admissible!
           </p>
-          <Button href="/etudescliniques" variant = "outline-dark">Voir les études cliniques</Button>
           <Button href="/questionnairepreliminaire" variant="primary" size = "lg">Faire le quiz</Button>
+          <Button href="/etudescliniques" variant = "outline-dark" active>Voir les études cliniques</Button>
       <br />
     </section>
-    <section>
+    <section id = "Main_faq">
       <h1>Foire aux questions</h1>
           <p>
           Nous sommes là pour vous aider dans votre de choix de participer ou
@@ -77,7 +78,7 @@ export const accueil = () => (
             nous. Voilà pourquoi une section de notre site est réservé aux
             questions les plus fréquemment posées.
           </p>
-          <Button href="/faq" variant = "outline-dark">Voir la foire aux questions</Button>
+          <Button href="/faq" variant = "outline-dark" active>Voir la foire aux questions</Button>
       <br />
     </section>
     <br />

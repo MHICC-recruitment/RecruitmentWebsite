@@ -1,0 +1,24 @@
+.footer-container{
+    background-color: rgba(245, 245, 245, 0.9);
+    color: rgb(54, 51, 51);
+    font-size: smaller;
+    
+}
+
+.footer-bottom{
+    font-size: x-small;
+}
+
+h4 {
+    text-decoration-line: underline;
+    text-decoration-color: rgb(175, 125, 233);
+    color:rgb(175, 125, 233);
+}
+
+a {
+    color: rgb(109, 19, 170);
+  }
+
+a:hover {
+     color: rgb(175, 125, 233);
+  }
