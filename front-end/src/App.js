@@ -10,13 +10,15 @@ import { Layout } from "./Components/Layout";
 import { NavigationBar } from "./Components/NavigationBar";
 import {Footer} from './Components/Footer';
 import { faq } from "./pages/faq";
+import styles from "./App.css";
+import { Container } from "react-bootstrap";
 
 class App extends Component {
   render() {
     return (
       <React.Fragment>
         <NavigationBar />
-        <Layout>
+        <Layout  className = {styles["App-container"]}>
           <Router>
             <Switch>
               <Route exact path="/" component={accueil} />

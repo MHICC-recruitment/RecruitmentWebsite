@@ -1,7 +1,9 @@
 .footer-container{
     background-color: rgba(245, 245, 245, 0.9);
-    color: rgb(54, 51, 51);
     font-size: smaller;
+    position: relative;
+    bottom:0;
+    width: 100%;
     
 }
 
